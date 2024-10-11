@@ -1,0 +1,137 @@
+# Python 3.8/3.9 Installation and Setup
+# Follow instructions from the provided guide to install Python 3.8 or 3.9 on Ubuntu 22.04 LTS
+# https://linux.how2shout.com/install-python-3-9-or-3-8-on-ubuntu-22-04-lts-jammy-jellyfish/
+
+# Package Fixes and Python Environment Setup
+sudo apt update
+sudo apt install python3.9-distutils
+sudo apt remove --purge python3-apt
+sudo apt install python3-apt
+pip3 install bittensor==6.7.0
+sudo apt-get install python3.9-venv
+sudo apt-get update && sudo apt-get install python3.10-venv
+python3.10 -m venv ~/venvs/ImageAlchemy
+source ~/venvs/ImageAlchemy/bin/activate
+pip install wheel
+pip install --upgrade setuptools
+source ~/venvs/ImageAlchemy/bin/activate
+cd ~/ImageAlchemy
+pip install -e .
+sudo apt-get install expect
+pip install nest-asyncio
+pip install gradio_client==0.2.7
+pip uninstall cffi
+sudo pip install cffi==1.15.0
+git lfs install
+export PYTHONPATH=$PYTHONPATH:/root/Compute-Subnet
+python -m pip install --upgrade bittensor
+
+# System Management Commands
+# Process and System Monitoring
+ps aux | grep "get_models.sh"
+sudo strace -p12754 -s9999 -e write
+watch -n 1 nvidia-smi
+
+# Firewall and Networking
+sudo ufw allow 9091
+sudo iptables -A INPUT -p tcp --dport 9091 -j ACCEPT
+
+# File and Directory Operations
+sudo mv /root/folder1 /home/folder2/
+scp -r auto_reg/ root@xxx.xxx.xxx.xxx:~/auto_reg/  # Replaced IP with xxx.xxx.xxx.xxx
+
+# Service Management
+systemctl start nvidia-persistenced
+systemctl status nvidia-persistenced
+systemctl start ollama
+systemctl stop ollama
+
+# CUDA and NVIDIA Management
+ls /usr/local/cuda/
+nvidia-smi --gpu-reset -i 0
+sudo nvidia-smi -pm 1
+nvidia-smi -mig 0  # Disable MIG
+nvidia-smi -mig 1  # Enable MIG
+nvidia-smi mig -lgip
+nvidia-smi mig -cgi 5 -C
+nvidia-smi mig -cgi 9 -C
+
+# Shell Configuration
+vim -n ~/.bashrc
+source ~/.bashrc
+
+# Docker Management
+docker stop $(docker ps -a -q)
+docker containers ls -a
+docker system prune
+
+# Process Management with PM2
+pm2 start pm2-config.json --only miner_26
+nohup ./launcher.sh > /dev/null 2>&1 &
+pm2 startOrReload pm2-config.json --update-env --only sn_27
+nohup ./wrapper.sh > /dev/null 2>&1 &
+pm2 restart miner_26
+pm2 kill
+
+# Log and Process Monitoring
+tail -f bt-reg-logs.log
+pgrep -af 'reg_script.sh'
+kill -9 <pid>  # Replace <pid> with the actual process ID
+
+# ClamAV Antivirus Setup and Scanning
+sudo apt-get update
+sudo apt-get install clamav clamav-daemon -y
+freshclam
+sudo /etc/init.d/clamav-freshclam stop
+sudo /etc/init.d/clamav-freshclam start
+clamscan -r /
+clamscan -i -v -r /
+
+# Network and System Utilities
+netstat -antup
+w
+ntop
+splunk
+
+# btcli Commands for Bittensor Management
+btcli w overview --wallet.name sn4 --netuid 4
+btcli w inspect
+btcli stake remove
+btcli s hyperparameters --netuid 4
+btcli subnets metagraph --netuid 4
+btcli s register --subtensor.network test --netuid 39 --wallet.name sn27 --wallet.hotkey test-5
+
+# GPU Partitioning and Miner Restart
+docker stop $(docker ps -a -q)
+pm2 kill
+nvidia-smi --gpu-reset -i 0
+nvidia-smi -r
+nvidia-smi -mig 1
+nvidia-smi mig -cgi 5 -C
+nvidia-smi mig -cgi 9 -C
+source ~/venvs/ImageAlchemy/bin/activate
+pm2 restart miner_26
+
+# Starting a Subtensor Node
+git clone https://github.com/opentensor/subtensor.git
+cd subtensor
+docker compose down --volumes
+sudo ./scripts/run/subtensor.sh -e docker --network mainnet --node-type lite
+
+# Check Subtensor Status
+btcli s list --subtensor.chain_endpoint ws://127.0.0.1:9944
+
+# Running a Quantized Model Using Ollama
+curl -fsSL https://ollama.com/install.sh | sh
+ollama run wizardlm2:8x22b-q4_0  # [80 GB]
+ollama run wizardlm2:8x22b-q8_0  # [150 GB]
+ollama run wizardlm2:8x22b-fp16  # [281 GB]
+ollama pull wizardlm2:8x22b-q4_0
+
+# Exporting Ollama Models
+sudo apt update
+sudo apt install p7zip-full
+# Run your custom ollama_export script here
+
+# ImageAlchemy Setup
+pip3 install expecttest
